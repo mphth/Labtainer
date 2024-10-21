@@ -1,5 +1,6 @@
 #!/bin/bash
 
+echo "Bắt đầu hoạt động của file.sh"
 set -e  # Dừng script khi có lỗi
 
 # Cập nhật hệ thống
