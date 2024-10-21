@@ -66,8 +66,6 @@ EOF
 
 # Cấp Quyền Thực Thi cho Dịch Vụ
 sudo chmod +x /etc/init.d/elasticsearch
-sudo chkconfig --add elasticsearch
-sudo chkconfig elasticsearch on  # Để khởi động cùng hệ thống
 
 # Khởi động Elasticsearch
 sudo service elasticsearch start
@@ -119,7 +117,6 @@ EOF
 
 # Cấp Quyền Thực Thi cho Dịch Vụ Logstash
 sudo chmod +x /etc/init.d/logstash
-sudo chkconfig --add logstash
 
 
 # Khởi động Logstash
