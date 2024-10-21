@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e  # Dừng script khi có lỗi
+
 # Cập nhật hệ thống
 sudo yum -y update && sudo yum -y upgrade
 
@@ -21,28 +23,32 @@ EOF
 sudo yum -y install elasticsearch
 
 # Khởi động Elasticsearch
-sudo systemctl start elasticsearch
-sudo systemctl enable elasticsearch
+sudo service elasticsearch start
+sudo chkconfig elasticsearch on  # Để khởi động cùng hệ thống
 
 # Kiểm tra Elasticsearch
 curl -X GET "localhost:9200/" || { echo "Elasticsearch không hoạt động"; exit 1; }
 
 # Cài đặt Logstash
-sudo yum -y install logstash
+sudo yum -y install logstash || { echo "Cài đặt Logstash thất bại"; exit 1; }
+
+# Khởi động Logstash
+sudo service logstash start
+sudo chkconfig logstash on  # Để khởi động cùng hệ thống
 
 # Cài đặt Kibana
-sudo yum -y install kibana
+sudo yum -y install kibana || { echo "Cài đặt Kibana thất bại"; exit 1; }
 
 # Khởi động Kibana
-sudo systemctl start kibana
-sudo systemctl enable kibana
+sudo service kibana start
+sudo chkconfig kibana on  # Để khởi động cùng hệ thống
 
 # Cài đặt Nginx (nếu chưa có)
 sudo yum -y install epel-release
 sudo yum -y install nginx
 
 # Cài đặt Filebeat
-sudo yum -y install filebeat
+sudo yum -y install filebeat || { echo "Cài đặt Filebeat thất bại"; exit 1; }
 
 # Cấu hình Filebeat
 sudo bash -c 'cat <<EOF > /etc/filebeat/filebeat.yml
@@ -57,8 +63,8 @@ output.logstash:
 EOF'
 
 # Khởi động Filebeat
-sudo systemctl start filebeat
-sudo systemctl enable filebeat
+sudo service filebeat start
+sudo chkconfig filebeat on  # Để khởi động cùng hệ thống
 
 # Cấu hình Logstash
 sudo bash -c 'cat <<EOF > /etc/logstash/conf.d/nginx.conf
@@ -84,8 +90,7 @@ output {
 }
 EOF'
 
-# Khởi động Logstash
-sudo systemctl start logstash
-sudo systemctl enable logstash
+# Khởi động lại Logstash
+sudo service logstash restart
 
 echo "Cài đặt hoàn tất! Truy cập Kibana tại http://localhost:5601"
