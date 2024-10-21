@@ -22,49 +22,108 @@ type=rpm-md
 EOF
 sudo yum -y install elasticsearch
 
-# Khởi động Elasticsearch
-sudo service elasticsearch start
+# Tạo Tập Tin Dịch Vụ cho Elasticsearch
+cat <<EOF | sudo tee /etc/init.d/elasticsearch
+#!/bin/bash
+# elasticsearch: Startup script for Elasticsearch
+
+ES_HOME=/usr/share/elasticsearch
+
+case "\$1" in
+    start)
+        echo "Starting Elasticsearch..."
+        nohup \$ES_HOME/bin/elasticsearch > /var/log/elasticsearch.log 2>&1 &
+        echo \$! > /var/run/elasticsearch.pid
+        ;;
+    stop)
+        echo "Stopping Elasticsearch..."
+        if [ -f /var/run/elasticsearch.pid ]; then
+            kill \$(cat /var/run/elasticsearch.pid)
+            rm -f /var/run/elasticsearch.pid
+        else
+            echo "Elasticsearch is not running"
+        fi
+        ;;
+    restart)
+        echo "Restarting Elasticsearch..."
+        \$0 stop
+        \$0 start
+        ;;
+    status)
+        if [ -f /var/run/elasticsearch.pid ]; then
+            echo "Elasticsearch is running"
+        else
+            echo "Elasticsearch is not running"
+        fi
+        ;;
+    *)
+        echo "Usage: \$0 {start|stop|restart|status}"
+        exit 1
+esac
+exit 0
+EOF
+
+# Cấp Quyền Thực Thi cho Dịch Vụ
+sudo chmod +x /etc/init.d/elasticsearch
+sudo chkconfig --add elasticsearch
 sudo chkconfig elasticsearch on  # Để khởi động cùng hệ thống
 
-# Kiểm tra Elasticsearch
-curl -X GET "localhost:9200/" || { echo "Elasticsearch không hoạt động"; exit 1; }
+# Khởi động Elasticsearch
+sudo service elasticsearch start
 
 # Cài đặt Logstash
-sudo yum -y install logstash || { echo "Cài đặt Logstash thất bại"; exit 1; }
+sudo yum -y install logstash 
+
+# Tạo Tập Tin Dịch Vụ cho Logstash
+cat <<EOF | sudo tee /etc/init.d/logstash
+#!/bin/bash
+# logstash: Startup script for Logstash
+
+LOGSTASH_HOME=/usr/share/logstash
+LOGSTASH_CONF=/etc/logstash/conf.d/nginx.conf
+
+case "\$1" in
+    start)
+        echo "Starting Logstash..."
+        nohup \$LOGSTASH_HOME/bin/logstash -f \$LOGSTASH_CONF > /var/log/logstash.log 2>&1 &
+        echo \$! > /var/run/logstash.pid
+        ;;
+    stop)
+        echo "Stopping Logstash..."
+        if [ -f /var/run/logstash.pid ]; then
+            kill \$(cat /var/run/logstash.pid)
+            rm -f /var/run/logstash.pid
+        else
+            echo "Logstash is not running"
+        fi
+        ;;
+    restart)
+        echo "Restarting Logstash..."
+        \$0 stop
+        \$0 start
+        ;;
+    status)
+        if [ -f /var/run/logstash.pid ]; then
+            echo "Logstash is running"
+        else
+            echo "Logstash is not running"
+        fi
+        ;;
+    *)
+        echo "Usage: \$0 {start|stop|restart|status}"
+        exit 1
+esac
+exit 0
+EOF
+
+# Cấp Quyền Thực Thi cho Dịch Vụ Logstash
+sudo chmod +x /etc/init.d/logstash
+sudo chkconfig --add logstash
+
 
 # Khởi động Logstash
 sudo service logstash start
-sudo chkconfig logstash on  # Để khởi động cùng hệ thống
 
-# Cài đặt Kibana
-sudo yum -y install kibana || { echo "Cài đặt Kibana thất bại"; exit 1; }
-
-# Khởi động Kibana
-sudo service kibana start
-sudo chkconfig kibana on  # Để khởi động cùng hệ thống
-
-# Cài đặt Nginx (nếu chưa có)
-sudo yum -y install epel-release
-sudo yum -y install nginx
-
-# Cài đặt Filebeat
-sudo yum -y install filebeat || { echo "Cài đặt Filebeat thất bại"; exit 1; }
-
-# Cấu hình Filebeat
-sudo bash -c 'cat <<EOF > /etc/filebeat/filebeat.yml
-filebeat.inputs:
-- type: log
-  enabled: true
-  paths:
-    - /var/log/nginx/*.log
-
-output.logstash:
-  hosts: ["localhost:5044"]
-EOF'
-
-# Khởi động Filebeat
-sudo service filebeat start
-sudo chkconfig filebeat on  # Để khởi động cùng hệ thống
 
 # Cấu hình Logstash
 sudo bash -c 'cat <<EOF > /etc/logstash/conf.d/nginx.conf
@@ -93,4 +152,4 @@ EOF'
 # Khởi động lại Logstash
 sudo service logstash restart
 
-echo "Cài đặt hoàn tất! Truy cập Kibana tại http://localhost:5601"
+echo "Cài đặt hoàn tất!"
