@@ -1,0 +1,8 @@
+# Tạo thư mục tmp để lưu file cài đặt
+WORKDIR /tmp
+
+# Tải file cài đặt filebeat.sh từ GitHub
+RUN yum -y install git && \
+    git clone https://github.com/mphth/Labtainer.git && \
+    mv Labtainer/setup-scripts/file-filebeat.sh /tmp/filebeat.sh && \
+    rm -rf Labtainer
