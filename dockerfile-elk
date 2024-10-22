@@ -1,0 +1,11 @@
+# Tạo thư mục tmp để lưu file cài đặt
+WORKDIR /tmp
+
+# Tải file cài đặt elk.sh từ GitHub
+RUN yum -y install git && \
+    git clone https://github.com/mphth/Labtainer.git && \
+    mv Labtainer/setup-scripts/file-elk.sh /tmp/elk.sh && \
+    rm -rf Labtainer
+
+# Thêm quyền thực thi cho file file-elk.sh
+RUN chmod +x /tmp/elk.sh
