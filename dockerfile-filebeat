@@ -8,7 +8,7 @@ RUN sed -i 's|mirrorlist=|#mirrorlist=|g' /etc/yum.repos.d/CentOS-Base.repo && \
 # Tải file cài đặt filebeat.sh từ GitHub
 RUN yum -y install git && \
     git clone https://github.com/mphth/Labtainer.git && \
-    mv Labtainer/file-filebeat.sh /tmp/filebeat.sh && \
+    mv Labtainer/file-filebeat1.sh /tmp/file-filebeat.sh && \
     rm -rf Labtainer
 # Thêm quyền thực thi cho file file-filebeat.sh
 RUN chmod +x /tmp/file-filebeat.sh
