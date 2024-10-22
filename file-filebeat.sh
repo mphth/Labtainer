@@ -46,13 +46,11 @@ filebeat.inputs:
 - type: log
   enabled: true
   paths:
-    - /var/log/nginx/*.log
+    - /var/log/secure
 
 output.logstash:
   hosts: ["localhost:5044"]
 EOF'
 
-# Khởi động Filebeat
-sudo service filebeat start
 
-echo "Cài đặt Filebeat hoàn tất!"
+echo "Cài đặt Filebeat hoàn tất! Sử dụng lệnh " sudo service filebeat start " để Khởi động Filebeat"
