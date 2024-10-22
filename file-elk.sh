@@ -86,18 +86,9 @@ input {
   }
 }
 
-filter {
-  grok {
-    match => { 
-      "message" => "\[%{LOGLEVEL:log_level}\] Request \[id: %{NUMBER:request_id}\] from %{IP:client_ip}:%{NUMBER:client_port} %{WORD:method} %{URIPATHPARAM:uri}" 
-    }
-  }
-}
-
 output {
   elasticsearch {
-    hosts => ["127.0.0.1:9200"]
-    index => "nginx-%{+YYYY.MM.dd}"
+    hosts => ["172.0.0.3:9200"]
   }
 }
 EOF'
