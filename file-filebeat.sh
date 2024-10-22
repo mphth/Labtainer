@@ -49,7 +49,7 @@ filebeat.inputs:
     - /var/log/secure
 
 output.logstash:
-  hosts: ["localhost:5044"]
+  hosts: ["172.0.0.3:5044"]
 EOF'
 
 
