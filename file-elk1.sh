@@ -25,58 +25,5 @@ sudo yum -y install elasticsearch
 # Khởi động Elasticsearch
 sudo service elasticsearch start
 
-# Cài đặt Logstash
-sudo yum -y install logstash 
-
-# Tạo Tập Tin Dịch Vụ cho Logstash
-cat <<EOF | sudo tee /etc/init.d/logstash
-#!/bin/bash
-# logstash: Startup script for Logstash
-
-LOGSTASH_HOME=/usr/share/logstash
-LOGSTASH_CONF=/etc/logstash/conf.d/nginx.conf
-
-case "\$1" in
-    start)
-        echo "Starting Logstash..."
-        nohup \$LOGSTASH_HOME/bin/logstash -f \$LOGSTASH_CONF > /var/log/logstash.log 2>&1 &
-        echo \$! > /var/run/logstash.pid
-        ;;
-    stop)
-        echo "Stopping Logstash..."
-        if [ -f /var/run/logstash.pid ]; then
-            kill \$(cat /var/run/logstash.pid)
-            rm -f /var/run/logstash.pid
-        else
-            echo "Logstash is not running"
-        fi
-        ;;
-    restart)
-        echo "Restarting Logstash..."
-        \$0 stop
-        \$0 start
-        ;;
-    status)
-        if [ -f /var/run/logstash.pid ]; then
-            echo "Logstash is running"
-        else
-            echo "Logstash is not running"
-        fi
-        ;;
-    *)
-        echo "Usage: \$0 {start|stop|restart|status}"
-        exit 1
-esac
-exit 0
-EOF
-
-# Cấp Quyền Thực Thi cho Dịch Vụ Logstash
-sudo chmod +x /etc/init.d/logstash
-
-
-# Khởi động Logstash
-sudo service logstash start
-
-
 
 echo "Cài đặt hoàn tất!"
