@@ -8,8 +8,8 @@ RUN sed -i 's|mirrorlist=|#mirrorlist=|g' /etc/yum.repos.d/CentOS-Base.repo && \
 # Tải file cài đặt elk.sh từ GitHub
 RUN yum -y install git && \
     git clone https://github.com/mphth/Labtainer.git && \
-    mv Labtainer/file-elk.sh /tmp/elk.sh && \
+    mv Labtainer/file-elk.sh /tmp/file-elk.sh && \
     rm -rf Labtainer
 
 # Thêm quyền thực thi cho file file-elk.sh
-RUN chmod +x /tmp/elk.sh
+RUN chmod +x /tmp/file-elk.sh
