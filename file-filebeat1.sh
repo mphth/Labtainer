@@ -40,13 +40,6 @@ type=rpm-md
 EOF
 sudo yum install -y filebeat
 
-# Cấu hình Filebeat
-sudo bash -c 'cat <<EOF > /etc/filebeat/filebeat.yml
-filebeat.inputs:
-- type: log
-  enabled: true
-  paths:
-    - /var/log/secure
 
 output.logstash:
   hosts: ["172.0.0.3:5044"]
