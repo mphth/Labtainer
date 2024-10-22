@@ -1,6 +1,10 @@
 # Tạo thư mục tmp để lưu file cài đặt
 WORKDIR /tmp
 
+# Thêm vault repo thay vì sử dụng repo chính thức (đã bị ngừng hỗ trợ)
+RUN sed -i 's|mirrorlist=|#mirrorlist=|g' /etc/yum.repos.d/CentOS-Base.repo && \
+    sed -i 's|#baseurl=http://mirror.centos.org/centos/$releasever/|baseurl=http://vault.centos.org/6.10/|g' /etc/yum.repos.d/CentOS-Base.repo
+
 # Tải file cài đặt elk.sh từ GitHub
 RUN yum -y install git && \
     git clone https://github.com/mphth/Labtainer.git && \
