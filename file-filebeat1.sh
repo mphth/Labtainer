@@ -41,9 +41,4 @@ EOF
 sudo yum install -y filebeat
 
 
-output.logstash:
-  hosts: ["172.0.0.3:5044"]
-EOF'
-
-
 echo "Cài đặt Filebeat hoàn tất! Sử dụng lệnh " sudo service filebeat start " để Khởi động Filebeat"
