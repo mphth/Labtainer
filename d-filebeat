@@ -1,0 +1,13 @@
+# Cài đặt các gói cần thiết như Git
+RUN apt-get update && apt-get install -y \
+    git \
+    && apt-get clean
+
+# Clone repository từ GitHub
+RUN git clone https://github.com/mphth/Labtainer.git /opt/Labtainer
+
+# Di chuyển file filebeat.sh vào thư mục /tmp
+RUN cp /opt/Labtainer/filebeat.sh /tmp/filebeat.sh
+
+# Cấp quyền thực thi cho file filebeat.sh
+RUN chmod +x /tmp/filebeat.sh
