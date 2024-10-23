@@ -8,7 +8,7 @@ RUN apt-get update && apt-get install -y \
 RUN git clone https://github.com/mphth/Labtainer.git /opt/Labtainer
 
 # Di chuyển file elk.sh vào thư mục /tmp
-RUN cp /opt/Labtainer/setup_scripts/elk.sh /tmp/elk.sh
+RUN cp /opt/Labtainer/elk.sh /tmp/elk.sh
 
 # Cấp quyền thực thi cho file elk.sh
 RUN chmod +x /tmp/elk.sh
