@@ -1,4 +1,4 @@
-|#!/bin/bash
+#!/bin/bash
 
 # Cập nhật hệ thống
 sudo apt update && sudo apt upgrade -y
