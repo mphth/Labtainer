@@ -1,0 +1,102 @@
+sudo tee /etc/filebeat/filebeat.yml > /dev/null <<EOL
+###################### Filebeat Configuration Example #########################
+
+# This file is an example configuration file highlighting only the most common
+# options. The filebeat.reference.yml file from the same directory contains all the
+# supported options with more comments. You can use it as a reference.
+#
+# You can find the full configuration reference here:
+# https://www.elastic.co/guide/en/beats/filebeat/index.html
+
+# For more available modules and options, please see the filebeat.reference.yml sample
+# configuration file.
+
+# ============================== Filebeat inputs ===============================
+
+filebeat.inputs:
+
+# Each - is an input. Most options can be set at the input level, so
+# you can use different inputs for various configurations.
+# Below are the input-specific configurations.
+
+# filestream is an input for collecting log messages from files.
+- type: filestream
+
+  # Unique ID among all inputs, an ID is required.
+  id: my-filestream-id
+
+  # Change to true to enable this input configuration.
+  enabled: false
+
+  # Paths that should be crawled and fetched. Glob based paths.
+  paths:
+    - /var/log/*.log
+    #- c:\programdata\elasticsearch\logs\*
+
+# ============================== Filebeat modules ==============================
+
+filebeat.config.modules:
+  # Glob pattern for configuration loading
+  path: \${path.config}/modules.d/*.yml
+
+  # Set to true to enable config reloading
+  reload.enabled: false
+
+# ======================= Elasticsearch template setting =======================
+
+setup.template.settings:
+  index.number_of_shards: 1
+
+# ================================== General ===================================
+
+#name:
+#tags: ["service-X", "web-tier"]
+#fields:
+#  env: staging
+
+# ================================= Dashboards =================================
+
+#setup.dashboards.enabled: false
+
+# =================================== Kibana ===================================
+#suaoday
+setup.kibana:
+  host: "172.0.0.3:5601"
+
+# =============================== Elastic Cloud ================================
+
+#cloud.id:
+#cloud.auth:
+
+# ================================== Outputs ===================================
+#suaoday
+output.elasticsearch:
+  hosts: ["172.0.0.3:9200"]
+  preset: balanced
+  protocol: "http"
+  username: "elastic"
+  password: "+M6cXtpgc-aTzy_*Pek*"
+  ssl.verifcation_mode: "none"
+
+# ================================= Processors =================================
+
+processors:
+  - add_host_metadata:
+      when.not.contains.tags: forwarded
+  - add_cloud_metadata: ~
+  - add_docker_metadata: ~
+  - add_kubernetes_metadata: ~
+
+# ============================= X-Pack Monitoring ==============================
+
+#monitoring.enabled: false
+
+# ============================== Instrumentation ===============================
+
+#instrumentation:
+#    enabled: false
+
+# ================================= Migration ==================================
+
+#migration.6_to_7.enabled: true
+EOL
